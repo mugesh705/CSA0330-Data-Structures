@@ -1,0 +1,67 @@
+#include <stdio.h>
+
+struct edge {
+    int u, v, w;
+};
+
+int parent[20];
+
+int find(int i) {
+    while (parent[i])
+        i = parent[i];
+    return i;
+}
+
+int uni(int i, int j) {
+    if (i != j) {
+        parent[j] = i;
+        return 1;
+    }
+    return 0;
+}
+
+int main() {
+    int n, e, i, j;
+    int count = 0, total = 0;
+    struct edge edges[20], temp;
+
+    printf("Enter number of vertices: ");
+    scanf("%d", &n);
+
+    printf("Enter number of edges: ");
+    scanf("%d", &e);
+
+    printf("Enter edges (u v weight):\n");
+    for (i = 0; i < e; i++)
+        scanf("%d %d %d", &edges[i].u, &edges[i].v, &edges[i].w);
+
+    for (i = 0; i < e - 1; i++) {
+        for (j = i + 1; j < e; j++) {
+            if (edges[i].w > edges[j].w) {
+                temp = edges[i];
+                edges[i] = edges[j];
+                edges[j] = temp;
+            }
+        }
+    }
+
+    for (i = 0; i < n; i++)
+        parent[i] = 0;
+
+    printf("Edges in Minimum Spanning Tree:\n");
+
+    for (i = 0; i < e && count < n - 1; i++) {
+        int u = find(edges[i].u);
+        int v = find(edges[i].v);
+
+        if (uni(u, v)) {
+            printf("%d - %d : %d\n", edges[i].u, edges[i].v, edges[i].w);
+            total += edges[i].w;
+            count++;
+        }
+    }
+
+    printf("Total cost of MST = %d\n", total);
+
+    return 0;
+}
